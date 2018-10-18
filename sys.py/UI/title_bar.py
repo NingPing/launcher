@@ -153,7 +153,7 @@ class TitleBar:
                 """
 
                 if "POWER_SUPPLY_CAPACITY" in bat_uevent:
-                    cur_cap = int(bat_uevent["POWER_SUPPLY_CAPACITY"])
+                    cur_cap = int(((int(bat_uevent["POWER_SUPPLY_VOLTAGE_NOW"])-int(bat_uevent["POWER_SUPPLY_VOLTAGE_MIN_DESIGN"]))/(float(int(bat_uevent["POWER_SUPPLY_VOLTAGE_MAX_DESIGN"])-int(bat_uevent["POWER_SUPPLY_VOLTAGE_MIN_DESIGN"]))))*100)
                 else:
                     cur_cap = 0
                     
@@ -163,8 +163,8 @@ class TitleBar:
                     if cur_cap >= v[0] and cur_cap <= v[1]:
                         cap_ge = i
                         break
-        
-                if bat_uevent["POWER_SUPPLY_STATUS"] == "Charging":
+        	power_current = int(bat_uevent["POWER_SUPPLY_VOLTAGE_NOW"])
+                if power_current > 4118000:
                     self._Icons["battery_charging"]._IconIndex = cap_ge
                     self._Icons["battery"] = self._Icons["battery_charging"]
             
@@ -174,7 +174,7 @@ class TitleBar:
                     self._Icons["battery"] = self._Icons["battery_discharging"]
                     print("Discharging %d" % cap_ge)
                     
-                
+               
         return True
     
     def SetBatteryStat(self,bat):
